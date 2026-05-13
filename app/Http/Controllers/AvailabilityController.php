@@ -31,7 +31,6 @@ class AvailabilityController extends Controller
 
         $date = Carbon::parse($request->date);
         
-        // Horário de expediente: 09:00 às 17:00, slots de 1 hora
         $workingHoursStart = 9;
         $workingHoursEnd = 17;
         
@@ -40,17 +39,15 @@ class AvailabilityController extends Controller
             $slots[] = sprintf('%02d:00', $i);
         }
 
-        // Buscar horários já agendados para este dia
         $bookedSlots = $professional->appointments()
             ->where('date', $request->date)
             ->where('status', 'scheduled')
             ->pluck('time')
             ->map(function ($t) {
-                return substr($t, 0, 5); // garantir formato HH:MM
+                return substr($t, 0, 5);
             })
             ->toArray();
 
-        // Calcular slots disponíveis
         $availableSlots = array_values(array_diff($slots, $bookedSlots));
 
         return response()->json([

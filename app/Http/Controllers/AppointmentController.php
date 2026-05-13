@@ -30,12 +30,10 @@ class AppointmentController extends Controller
     {
         $query = $request->user()->appointments()->with('professional');
 
-        // Filtro por data
         if ($request->has('date')) {
             $query->whereDate('date', $request->date);
         }
 
-        // Filtro por profissional
         if ($request->has('professional_id')) {
             $query->where('professional_id', $request->professional_id);
         }
@@ -68,7 +66,6 @@ class AppointmentController extends Controller
     )]
     public function store(StoreAppointmentRequest $request)
     {
-        // Não permitir datas no passado (data de hoje com horário já passado)
         $dateTime = Carbon::parse($request->date . ' ' . $request->time);
         if ($dateTime->isPast()) {
             return response()->json([
@@ -76,7 +73,6 @@ class AppointmentController extends Controller
             ], 422);
         }
 
-        // Não permitir dois agendamentos no mesmo horário para o mesmo profissional
         $conflict = Appointment::where('professional_id', $request->professional_id)
             ->where('date', $request->date)
             ->where('time', $request->time)

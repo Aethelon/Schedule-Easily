@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('professional_id')->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->time('time');
-            $table->string('status')->default('scheduled'); // scheduled, canceled, done
+            $table->string('status')->default('scheduled');
             $table->timestamps();
         });
     }
